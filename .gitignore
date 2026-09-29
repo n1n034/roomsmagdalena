@@ -1,0 +1,6 @@
+.firebase/
+node_modules/
+*.log
+*-firebase-adminsdk-*.json
+_originali-slike/
+_stari-appscript

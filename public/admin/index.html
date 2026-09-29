@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f6f2ec">
+  <title>Administracija · Rooms Magdalena</title>
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../css/style.css?v=f46aac78">
+  <style>
+    /* ==========================================================================
+       Administracija – kalendar rezervacija
+       Boje i fontovi dolaze iz ../css/style.css
+       ========================================================================== */
+
+    [hidden] { display: none !important; }
+
+    :root {
+      --st-placeno: #4f8a68;
+      --st-akontacija: #2f6b80;
+      --st-nije: #c98b5e;
+      --line-soft: #ece6dc;
+      --radius: 6px;
+    }
+
+    body.adm {
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    main { animation: none !important; }
+
+    .adm-boot {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      color: var(--ink-soft);
+      letter-spacing: 0.1em;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .btn--sm { padding: 9px 16px; font-size: 11px; }
+    .btn--danger { background: transparent; color: #a3462f; border-color: #e2c3b8; }
+    .btn--danger:hover { background: #a3462f; color: #fff; border-color: #a3462f; }
+    .btn[disabled] { opacity: 0.6; cursor: wait; transform: none !important; box-shadow: none !important; }
+
+    .adm-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .adm-icon:hover { background: var(--stone-light); }
+
+    /* ---------- Prijava ---------- */
+
+    .login {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* Lijevo: fotografija s imenom */
+    .login_visual {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: clamp(32px, 5vw, 72px);
+      color: #fff;
+      overflow: hidden;
+      background: var(--sea);
+    }
+
+    .login_visual img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .login_visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(20, 30, 34, 0.05) 35%, rgba(20, 30, 34, 0.72) 100%);
+    }
+
+    .login_visual-text {
+      position: relative;
+      z-index: 1;
+      max-width: 460px;
+    }
+
+    .login_visual .brand_place { color: #f0c9a8; }
+
+    .login_wordmark {
+      margin: 14px 0 12px;
+      font-family: var(--serif);
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .login_tagline {
+      margin: 0;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Desno: forma */
+    .login_panel {
+      display: grid;
+      place-items: center;
+      background: var(--sand);
+    }
+
+    .login_form {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .login_form .eyebrow { margin-bottom: 14px; }
+
+    .login_form h1 {
+      margin: 0 0 10px;
+      font-size: clamp(40px, 4vw, 52px);
+    }
+
+    .login_intro {
+      margin-bottom: 36px;
+      color: var(--ink-soft);
+    }
+
+    .login_form .field input {
+      padding: 13px 14px;
+      font-size: 15.5px;
+    }
+
+    /* Polje lozinke s gumbom za prikaz */
+    .password {
+      position: relative;
+      display: block;
+    }
+
+    .password input { padding-right: 48px !important; }
+
+    .password_toggle {
+      position: absolute;
+      top: 50%;
+      right: 6px;
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      color: var(--ink-soft);
+      background: none;
+      border: 0;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .password_toggle:hover { color: var(--ink); background: var(--stone-light); }
+    .password_toggle .eye-closed { display: none; }
+    .password_toggle[aria-pressed="true"] .eye-open { display: none; }
+    .password_toggle[aria-pressed="true"] .eye-closed { display: block; }
+
+    .login_submit {
+      width: 100%;
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
+    .login_back {
+      display: inline-block;
+      margin-top: 28px;
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      text-decoration: none;
+    }
+
+    .login_back:hover { color: var(--sea); }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .login_visual img { animation: hero-zoom 12s var(--ease-out) both; }
+      .login_form > * { animation: rise-in 0.8s var(--ease-out) both; }
+      .login_form > :nth-child(2) { animation-delay: 0.06s; }
+      .login_form > :nth-child(3) { animation-delay: 0.12s; }
+      .login_form > :nth-child(4) { animation-delay: 0.18s; }
+      .login_form > :nth-child(5) { animation-delay: 0.24s; }
+      .login_form > :nth-child(n+6) { animation-delay: 0.3s; }
+    }
+
+    .field {
+      display: block;
+      margin-bottom: 18px;
+    }
+
+    .field > span {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .field input,
+    .field select {
+      display: block;
+      width: 100%;
+      padding: 11px 12px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: 4px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--sea);
+      box-shadow: 0 0 0 3px rgba(31, 78, 95, 0.12);
+    }
+
+    .login_msg {
+      min-height: 22px;
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: #a3462f;
+    }
+
+    /* ---------- Zaglavlje ---------- */
+
+    .adm-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(246, 242, 236, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--stone);
+    }
+
+    .adm-wrap {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 3vw, 32px);
+    }
+
+    .adm-header .adm-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 68px;
+    }
+
+    .adm-header .brand_name { font-size: 24px; }
+
+    .adm-user {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    /* ---------- Danas ---------- */
+
+    .adm-today {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 24px 0 20px;
+    }
+
+    .today-card {
+      padding: 16px 18px;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: var(--radius);
+    }
+
+    .today-card h3 {
+      margin: 0 0 10px;
+      font-family: var(--sans);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+    }
+
+    .today-card .count {
+      font-family: var(--serif);
+      font-size: 30px;
+      line-height: 1;
+      margin-right: 10px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font: 500 12.5px/1.4 var(--sans);
+      color: var(--ink);
+      background: var(--stone-light);
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .chip:hover { background: var(--stone); }
+
+    .chip i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .muted { color: var(--ink-soft); font-size: 13px; }
+
+    /* ---------- Alatna traka ---------- */
+
+    .adm-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .adm-tabs,
+    .adm-seg {
+      display: inline-flex;
+      padding: 3px;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: 999px;
+    }
+
+    .adm-tabs button,
+    .adm-seg button {
+      padding: 7px 16px;
+      font: 600 12px/1.2 var(--sans);
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+      background: none;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .adm-tabs button[aria-selected="true"],
+    .adm-seg button[aria-pressed="true"] {
+      background: var(--sea);
+      color: #fff;
+    }
+
+    .adm-search {
+      flex: 1 1 240px;
+      max-width: 420px;
+    }
+
+    .adm-search input {
+      width: 100%;
+      padding: 10px 14px;
+      font: inherit;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: 999px;
+    }
+
+    .adm-search input:focus {
+      outline: none;
+      border-color: var(--sea);
+    }
+
+    .adm-toolbar .btn--primary { margin-left: auto; }
+
+    .adm-calbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .adm-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .adm-nav {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .adm-nav h2 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .adm-nav h2 small {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-left: 8px;
+    }
+
+    .adm-badge {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--stone);
+      border-radius: 999px;
+    }
+
+    .adm-select {
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: 999px;
+    }
+
+    .adm-seg {
+      flex-wrap: wrap;
+    }
+
+    .adm-seg .is-today-btn {
+      color: var(--sea);
+    }
+
+    /* ---------- Statistika ---------- */
+
+    .adm-stats {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      padding: 14px 16px;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: var(--radius);
+    }
+
+    .stat b {
+      display: block;
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .stat .meter {
+      height: 4px;
+      margin-top: 10px;
+      background: var(--stone-light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stat .meter i {
+      display: block;
+      height: 100%;
+      background: var(--sea);
+      border-radius: 4px;
+    }
+
+    /* ---------- Kalendar ---------- */
+
+    .cal-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 150px);
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: var(--radius);
+      overscroll-behavior: contain;
+    }
+
+    .cal {
+      --unitw: 210px;
+      --dayw: 46px;
+      --rowh: 56px;
+      --head1: 32px;
+      display: grid;
+      grid-template-columns: var(--unitw) repeat(var(--days), var(--dayw));
+      grid-template-rows: var(--head1) 48px;
+      grid-auto-rows: var(--rowh);
+      width: max-content;
+      min-width: 100%;
+    }
+
+    .cal--compact { --dayw: 34px; }
+
+    .cal_corner {
+      grid-row: 1 / 3;
+      grid-column: 1;
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 8;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 14px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--stone-light);
+      border-right: 1px solid var(--stone);
+      border-bottom: 1px solid var(--stone);
+    }
+
+    .cal_month {
+      grid-row: 1;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      background: var(--stone-light);
+      border-left: 1px solid var(--stone);
+      overflow: hidden;
+    }
+
+    .cal_month span {
+      position: sticky;
+      left: calc(var(--unitw) + 10px);
+      padding: 0 10px;
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .cal_day {
+      grid-row: 2;
+      position: sticky;
+      top: var(--head1);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      background: #fff;
+      border-left: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--stone);
+      font-size: 13px;
+      line-height: 1.1;
+    }
+
+    .cal_day small {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+    }
+
+    .cal_day.is-weekend { background: #faf6f0; }
+
+    .cal_day.is-today {
+      background: var(--sea);
+      color: #fff;
+    }
+
+    .cal_day.is-today small { color: rgba(255, 255, 255, 0.8); }
+
+    .cal_day.is-month-start,
+    .cal_cell.is-month-start { border-left-color: var(--stone); }
+
+    .cal_unit {
+      grid-column: 1;
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 14px;
+      background: #fff;
+      border-right: 1px solid var(--stone);
+      border-bottom: 1px solid var(--line-soft);
+      line-height: 1.25;
+    }
+
+    .cal_unit strong {
+      font-weight: 500;
+      font-size: 13.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cal_unit small { font-size: 11.5px; color: var(--ink-soft); }
+    .cal_unit .short { display: none; }
+
+    .cal_cell {
+      border-left: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+      cursor: cell;
+      transition: background-color 0.15s;
+    }
+
+    .cal_cell.is-weekend { background: #fcfaf6; }
+    .cal_cell.is-today { background: rgba(31, 78, 95, 0.07); }
+    .cal_cell:hover { background: rgba(201, 139, 94, 0.16); }
+
+    .cal_bar {
+      z-index: 2;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      height: 36px;
+      margin: 0 calc(var(--dayw) / 2);
+      padding: 0 9px;
+      font: 600 12.5px/1.1 var(--sans);
+      color: #fff;
+      text-align: left;
+      white-space: nowrap;
+      border: 0;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 6px rgba(43, 42, 40, 0.15);
+      overflow: hidden;
+      cursor: pointer;
+      transition: filter 0.15s, transform 0.15s, opacity 0.2s;
+    }
+
+    .cal_bar:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .cal_bar span { overflow: hidden; text-overflow: ellipsis; }
+    .cal_bar small { font-weight: 500; opacity: 0.85; }
+    .cal_bar.cut-start { margin-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+    .cal_bar.cut-end { margin-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+    .cal_bar.is-dim { opacity: 0.18; }
+    .cal--compact .cal_bar { font-size: 11.5px; padding: 0 6px; }
+
+    /* Traka koja počinje na dan smjene – ime ne smije ići ispod oznake ⇄ */
+    .cal_bar.after-swap { padding-left: 17px; }
+
+    .cal_swap {
+      z-index: 3;
+      align-self: center;
+      justify-self: center;
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      font: 700 13px/1 var(--sans);
+      color: #fff;
+      background: #e07b39;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(43, 42, 40, 0.3);
+      pointer-events: none;
+    }
+
+    .swap-dot {
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      font: 700 11px/1 var(--sans);
+      color: #fff;
+      background: #e07b39;
+      border-radius: 50%;
+    }
+
+    .adm-table .swap-dot { margin-left: 6px; vertical-align: -3px; }
+
+    .st-placeno { background: var(--st-placeno); }
+    .st-akontacija { background: var(--st-akontacija); }
+    .st-nije_placeno { background: var(--st-nije); }
+
+    .adm-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin: 12px 0 40px;
+      font-size: 12.5px;
+      color: var(--ink-soft);
+    }
+
+    .adm-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .adm-legend i {
+      width: 22px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* ---------- Popis ---------- */
+
+    .adm-filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .adm-filters select {
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: 999px;
+    }
+
+    .adm-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .adm-filters .muted { margin-left: auto; }
+
+    .adm-table-wrap {
+      overflow: auto;
+      margin-bottom: 40px;
+      background: #fff;
+      border: 1px solid var(--stone);
+      border-radius: var(--radius);
+    }
+
+    .adm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .adm-table th {
+      position: sticky;
+      top: 0;
+      padding: 12px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: left;
+      white-space: nowrap;
+      color: var(--ink-soft);
+      background: var(--stone-light);
+      border-bottom: 1px solid var(--stone);
+    }
+
+    .adm-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+
+    .adm-table tbody tr { cursor: pointer; transition: background-color 0.15s; }
+    .adm-table tbody tr:hover { background: #fbf8f3; }
+    .adm-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .adm-table .nowrap { white-space: nowrap; }
+    .adm-table a { color: var(--sea); text-decoration: none; }
+    .adm-table .empty { padding: 40px; text-align: center; color: var(--ink-soft); cursor: default; }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* ---------- Dijalog ---------- */
+
+    .adm-dialog {
+      width: min(620px, calc(100vw - 24px));
+      max-height: calc(100vh - 24px);
+      padding: 0;
+      color: var(--ink);
+      background: var(--sand);
+      border: 1px solid var(--stone);
+      border-radius: 8px;
+      box-shadow: 0 40px 80px rgba(43, 42, 40, 0.25);
+    }
+
+    .adm-dialog::backdrop {
+      background: rgba(43, 42, 40, 0.45);
+      backdrop-filter: blur(2px);
+    }
+
+    .adm-dialog[open] { animation: dlg-in 0.25s var(--ease-out); }
+
+    @keyframes dlg-in {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .adm-dialog header,
+    .adm-dialog footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 24px;
+    }
+
+    .adm-dialog header { border-bottom: 1px solid var(--stone); }
+    .adm-dialog header h2 { flex: 1; margin: 0; font-size: 30px; }
+    .adm-dialog footer { border-top: 1px solid var(--stone); }
+    .adm-dialog footer .spacer { flex: 1; }
+
+    .adm-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 16px;
+      padding: 22px 24px 4px;
+    }
+
+    .adm-form .span-2 { grid-column: 1 / -1; }
+
+    .dlg-info {
+      margin: 0 24px 10px;
+      font-size: 13.5px;
+      color: var(--ink-soft);
+    }
+
+    .dlg-warn {
+      margin: 0 24px 14px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: #7a3b22;
+      background: #f8e6da;
+      border-radius: 4px;
+    }
+
+    .dlg-warn:empty { display: none; }
+
+    /* ---------- Obavijest ---------- */
+
+    .adm-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 100;
+      padding: 12px 20px;
+      font-size: 14px;
+      color: #fff;
+      background: var(--ink);
+      border-radius: 999px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translate(-50%, 20px);
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.3s var(--ease-out);
+    }
+
+    .adm-toast.is-shown {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .adm-toast.is-error { background: #a3462f; }
+
+    /* ---------- Responzivno ---------- */
+
+    @media (max-width: 1000px) {
+      .adm-stats { grid-template-columns: repeat(3, 1fr); }
+      .adm-today { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 767px) {
+      .adm-today { grid-template-columns: 1fr; }
+      .adm-stats { grid-template-columns: repeat(2, 1fr); }
+      .adm-user span { display: none; }
+      .adm-toolbar .btn--primary { margin-left: 0; width: 100%; }
+      .adm-nav h2 { font-size: 24px; }
+      .cal { --unitw: 64px; --dayw: 40px; }
+      .cal--compact { --dayw: 30px; }
+      .cal_unit { padding: 0 8px; }
+      .cal_unit .full { display: none; }
+      .cal_unit .short { display: block; }
+      .cal_corner { padding: 0 8px 10px; font-size: 9px; }
+      .adm-form { grid-template-columns: 1fr; }
+      .adm-dialog header, .adm-dialog footer { padding: 14px 18px; }
+      .adm-form { padding: 18px 18px 4px; }
+      .dlg-info, .dlg-warn { margin-left: 18px; margin-right: 18px; }
+    }
+
+    @media (max-width: 860px) {
+      .login { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      .login_visual { min-height: 200px; padding: 28px 24px; }
+      .login_wordmark { font-size: 36px; margin: 8px 0 0; }
+      .login_tagline { display: none; }
+      .login_panel { place-items: start center; padding-top: 40px; }
+    }
+
+    /* ==========================================================================
+       Fiksni prikaz na jednom ekranu – stranica se nikad ne skrola.
+       Kalendar ispunjava sav preostali prostor; jedino kalendar i popis imaju
+       vlastito pomicanje unutar svog okvira (153 dana ne stane u širinu ekrana).
+       ========================================================================== */
+
+    html,
+    body.adm {
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    .login {
+      height: 100vh;
+      height: 100dvh;
+      min-height: 0;
+    }
+
+    .login_panel {
+      overflow: auto;
+    }
+
+    #app-view {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    #app-view > .adm-header {
+      position: static;
+      flex: none;
+    }
+
+    .adm-header .adm-wrap {
+      min-height: 58px;
+    }
+
+    #app-view > .adm-wrap {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    /* Danas: jedan kompaktan red */
+    .adm-today {
+      flex: none;
+      margin: 0;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .today-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 8px 12px;
+      overflow: hidden;
+    }
+
+    .today-card h3 {
+      flex: none;
+      margin: 0;
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+
+    .today-card .count {
+      flex: none;
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .today-card .chips {
+      flex-wrap: nowrap;
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .today-card .chip {
+      flex: none;
+      padding: 2px 8px;
+      font-size: 12px;
+    }
+
+    .today-card .muted {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .adm-toolbar,
+    .adm-calbar,
+    .adm-filters {
+      flex: none;
+      margin: 0;
+    }
+
+    .adm-nav h2 { font-size: 26px; }
+
+    /* Kartice kalendara i popisa zauzimaju ostatak visine */
+    #tab-calendar,
+    #tab-list {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Statistika: jedan kompaktan red */
+    .adm-stats {
+      flex: none;
+      margin: 0;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stat {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px 8px;
+      min-width: 0;
+      padding: 8px 12px;
+    }
+
+    .stat b {
+      display: inline;
+      font-size: 22px;
+    }
+
+    .stat span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stat .meter {
+      flex-basis: 100%;
+      margin-top: 2px;
+    }
+
+    /* Kalendar puni preostali prostor; redovi se rastegnu da sve jedinice stanu po visini */
+    .cal-wrap {
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+    }
+
+    .cal {
+      --head1: 28px;
+      min-height: 100%;
+      grid-template-rows: var(--head1) 42px repeat(var(--units, 9), minmax(32px, 1fr));
+      grid-auto-rows: unset;
+    }
+
+    .cal_bar {
+      height: calc(100% - 10px);
+      max-height: 38px;
+    }
+
+    .adm-legend {
+      flex: none;
+      margin: 0;
+      gap: 6px 16px;
+      font-size: 12px;
+    }
+
+    .adm-table-wrap {
+      flex: 1;
+      min-height: 0;
+      margin: 0;
+    }
+
+    @media (max-width: 1000px) {
+      .adm-today { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .adm-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 767px) {
+      #app-view > .adm-wrap { gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+      .adm-header .adm-wrap { min-height: 52px; }
+      .adm-header .brand_name { font-size: 20px; }
+
+      /* Danas: četiri mala polja u jednom redu */
+      .adm-today { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+      .today-card { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 8px; }
+      .today-card h3 { font-size: 8.5px; letter-spacing: 0.08em; line-height: 1.2; white-space: normal; }
+      .today-card .count { font-size: 18px; }
+      .today-card .chips,
+      .today-card .muted { display: none; }
+
+      /* Alatna traka: kartice + gumb "+" u prvom redu, pretraga u drugom */
+      .adm-toolbar { gap: 8px; }
+      .adm-toolbar .btn--primary { width: auto; margin-left: auto; padding: 9px 16px; font-size: 16px; }
+      .hide-sm { display: none; }
+      .adm-search { flex-basis: 100%; max-width: none; order: 3; }
+      .adm-search input { padding: 8px 14px; }
+      .adm-tabs button, .adm-seg button { padding: 6px 10px; }
+
+      /* Naslov sezone i mjeseci u jednom redu (mjeseci se pomiču vodoravno) */
+      .adm-calbar { flex-wrap: nowrap; gap: 8px; }
+      .adm-nav { flex: none; }
+      .adm-nav h2 { font-size: 20px; }
+      .adm-nav h2 small { display: none; }
+      .adm-badge { display: none; }
+      #month-jump { flex-wrap: nowrap; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+      #month-jump button { flex: none; }
+
+      /* Statistika: jedna vodoravna traka */
+      .adm-stats { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+      .stat { flex: none; padding: 6px 10px; }
+      .stat b { font-size: 18px; }
+      .stat span { font-size: 11px; }
+      .stat .meter { display: none; }
+
+      .adm-legend { display: none; }
+    }
+
+    /* Najuži mobiteli: kartice i gumb "+" moraju stati u jedan red */
+    @media (max-width: 400px) {
+      .adm-tabs button { padding: 6px 8px; font-size: 11px; letter-spacing: 0.02em; }
+      .adm-toolbar .btn--primary { padding: 8px 14px; }
+    }
+
+    /* Vrlo niski ekrani: niži redovi kalendara */
+    @media (max-height: 700px) {
+      .cal { grid-template-rows: var(--head1) 38px repeat(var(--units, 9), minmax(24px, 1fr)); }
+      .cal_unit small { display: none; }   /* kapacitet se vidi u dijalogu i popisu */
+      .cal_bar { font-size: 11px; max-height: 30px; }
+      .cal_bar small { display: none; }
+    }
+
+    @media (max-width: 340px) {
+      .adm-tabs button { padding: 5px 6px; font-size: 10.5px; }
+      .adm-toolbar .btn--primary { padding: 7px 12px; }
+    }
+
+    /* Niski ekrani (npr. laptop 768 px ili mobitel položen): još kompaktnije */
+    @media (max-height: 760px) {
+      .adm-legend { display: none; }
+      .stat .meter { display: none; }
+      .today-card { padding: 6px 12px; }
+    }
+
+    @media (max-height: 600px) {
+      .adm-today { display: none; }
+    }
+  </style>
+</head>
+<body class="adm">
+  <div class="adm-boot" id="boot">Učitavanje…</div>
+
+  <!-- ===================== PRIJAVA ===================== -->
+  <main class="login" id="login-view" hidden>
+    <aside class="login_visual">
+      <img src="../images/metajna-panorama.jpg" alt="">
+      <div class="login_visual-text">
+        <span class="brand_place">Metajna · Otok Pag</span>
+        <p class="login_wordmark">Rooms Magdalena</p>
+        <p class="login_tagline">Kalendar rezervacija, zauzeće i plaćanja na jednom mjestu.</p>
+      </div>
+    </aside>
+
+    <section class="login_panel">
+      <form class="login_form" id="login-form" novalidate>
+        <span class="eyebrow">Administracija</span>
+        <h1>Prijava</h1>
+        <p class="login_intro">Prijavite se za pregled i unos rezervacija.</p>
+
+        <label class="field">
+          <span>E-mail</span>
+          <input name="email" type="email" required autocomplete="username" autocapitalize="off" spellcheck="false">
+        </label>
+        <label class="field">
+          <span>Lozinka</span>
+          <span class="password">
+            <input name="password" type="password" required autocomplete="current-password">
+            <button type="button" class="password_toggle" id="pw-toggle" aria-label="Prikaži lozinku" aria-pressed="false">
+              <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.8 9.8 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            </button>
+          </span>
+        </label>
+
+        <p class="login_msg" id="login-msg" role="alert"></p>
+
+        <button class="btn btn--primary login_submit" type="submit" id="login-btn">Prijava</button>
+
+        <a class="login_back" href="../index.html">← Natrag na stranicu</a>
+      </form>
+    </section>
+  </main>
+
+  <!-- ===================== APLIKACIJA ===================== -->
+  <div id="app-view" hidden>
+    <header class="adm-header">
+      <div class="adm-wrap">
+        <a class="brand" href="../index.html" target="_blank" rel="noopener">
+          <span class="brand_name">Rooms Magdalena</span>
+          <span class="brand_place">Administracija</span>
+        </a>
+        <div class="adm-user">
+          <span id="user-email"></span>
+          <button class="btn btn--outline btn--sm" type="button" id="logout-btn">Odjava</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="adm-wrap">
+      <section class="adm-today" id="today" aria-label="Danas"></section>
+
+      <div class="adm-toolbar">
+        <!-- Kartice (sezona, arhiva, popis) slaže JavaScript -->
+        <div class="adm-tabs" role="tablist" id="tabs"></div>
+        <div class="adm-search">
+          <input type="search" id="search" placeholder="Traži gosta, telefon, napomenu…" aria-label="Pretraga">
+        </div>
+        <button class="btn btn--primary" type="button" id="new-btn" aria-label="Nova rezervacija">+<span class="hide-sm">&nbsp;Nova rezervacija</span></button>
+      </div>
+
+      <!-- Kalendar -->
+      <section id="tab-calendar">
+        <div class="adm-calbar">
+          <div class="adm-nav">
+            <h2 id="range-label"></h2>
+            <span class="adm-badge" id="archive-badge" hidden>Arhiva</span>
+            <select class="adm-select" id="archive-select" aria-label="Arhivska sezona" hidden></select>
+          </div>
+          <!-- Brzi skok na mjesec -->
+          <div class="adm-seg" id="month-jump"></div>
+        </div>
+
+        <div class="adm-stats" id="stats"></div>
+
+        <div class="cal-wrap" id="cal-wrap">
+          <div class="cal" id="cal"></div>
+        </div>
+
+        <div class="adm-legend">
+          <span><i class="st-placeno"></i>Plaćeno</span>
+          <span><i class="st-akontacija"></i>Akontacija</span>
+          <span><i class="st-nije_placeno"></i>Nije plaćeno</span>
+          <span><b class="swap-dot">⇄</b>Smjena gostiju (isti dan jedan odlazi, drugi dolazi)</span>
+          <span>Klik na prazno polje = nova rezervacija · klik na rezervaciju = uređivanje</span>
+        </div>
+      </section>
+
+      <!-- Popis -->
+      <section id="tab-list" hidden>
+        <div class="adm-filters">
+          <select id="f-status" aria-label="Status plaćanja">
+            <option value="">Svi statusi</option>
+          </select>
+          <select id="f-unit" aria-label="Jedinica">
+            <option value="">Sve jedinice</option>
+          </select>
+          <label class="adm-check"><input type="checkbox" id="f-upcoming" checked> Samo trenutne i buduće</label>
+          <span class="muted" id="list-count"></span>
+        </div>
+        <div class="adm-table-wrap">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>Dolazak</th>
+                <th>Odlazak</th>
+                <th class="num">Noći</th>
+                <th>Jedinica</th>
+                <th>Gost</th>
+                <th>Telefon</th>
+                <th class="num">Osobe</th>
+                <th>Status</th>
+                <th>Napomena</th>
+              </tr>
+            </thead>
+            <tbody id="list-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== DIJALOG REZERVACIJE ===================== -->
+  <dialog class="adm-dialog" id="res-dialog">
+    <form id="res-form" novalidate>
+      <header>
+        <h2 id="dlg-title">Nova rezervacija</h2>
+        <button class="adm-icon" type="button" data-close aria-label="Zatvori">×</button>
+      </header>
+
+      <div class="adm-form">
+        <label class="field span-2"><span>Jedinica</span><select name="unitId" required></select></label>
+        <label class="field"><span>Ime</span><input name="firstName" maxlength="100" autocomplete="off"></label>
+        <label class="field"><span>Prezime *</span><input name="lastName" maxlength="100" required autocomplete="off"></label>
+        <label class="field span-2"><span>Telefon</span><input name="phone" type="tel" maxlength="40" autocomplete="off"></label>
+        <label class="field"><span>Odrasli</span><input name="adults" type="number" min="0" max="20" step="1"></label>
+        <label class="field"><span>Djeca</span><input name="children" type="number" min="0" max="20" step="1"></label>
+        <label class="field"><span>Dolazak *</span><input name="arrival" type="date" required></label>
+        <label class="field"><span>Odlazak *</span><input name="departure" type="date" required></label>
+        <label class="field span-2"><span>Status plaćanja</span><select name="status"></select></label>
+        <label class="field span-2"><span>Napomena</span><input name="note" list="note-options" maxlength="500" autocomplete="off"></label>
+      </div>
+
+      <p class="dlg-info" id="dlg-info"></p>
+      <p class="dlg-warn" id="dlg-warn" role="alert"></p>
+
+      <footer>
+        <button class="btn btn--danger btn--sm" type="button" id="delete-btn">Obriši</button>
+        <span class="spacer"></span>
+        <button class="btn btn--outline btn--sm" type="button" data-close>Odustani</button>
+        <button class="btn btn--primary btn--sm" type="submit" id="save-btn">Spremi</button>
+      </footer>
+    </form>
+    <datalist id="note-options">
+      <option value="Doručak"></option>
+      <option value="Polupansion"></option>
+    </datalist>
+  </dialog>
+
+  <div class="adm-toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
+    import {
+      getAuth, onAuthStateChanged,
+      signInWithEmailAndPassword, signOut
+    } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
+    import {
+      getFirestore, collection, doc, getDoc,
+      onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
+
+    // ---------------------------------------------------------------------
+    // Firebase (ovi podaci su javni – pristup štite Firestore pravila)
+    // ---------------------------------------------------------------------
+    const app = initializeApp({
+      apiKey: 'AIzaSyClTQ4et8wJIvX8IWndbPo-sqnFvfBaWe4',
+      authDomain: 'rooms-magdalena.firebaseapp.com',
+      projectId: 'rooms-magdalena',
+      storageBucket: 'rooms-magdalena.firebasestorage.app',
+      messagingSenderId: '621965111895',
+      appId: '1:621965111895:web:46d852c73fcec1d4c02912'
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ---------------------------------------------------------------------
+    // Podaci
+    // ---------------------------------------------------------------------
+    const UNITS = [
+      { id: 's1', name: 'Soba 1 (priz.zad.lijevo)', short: 'S1', cap: '2+1' },
+      { id: 's2', name: 'Soba 2 (dvokrevetna)', short: 'S2', cap: '2' },
+      { id: 's3', name: 'Soba 3 (kat lijevo)', short: 'S3', cap: '2+2' },
+      { id: 's4', name: 'Soba 4 (kat desno)', short: 'S4', cap: '2+2' },
+      { id: 's5', name: 'Soba 5 (kat zadnja desno)', short: 'S5', cap: '2+1' },
+      { id: 's6', name: 'Soba 6 (priz.prva lijevo)', short: 'S6', cap: '2+2' },
+      { id: 's7', name: 'Soba 7 (Studio)', short: 'S7', cap: '2+1' },
+      { id: 'a1', name: 'Apartman 1', short: 'A1', cap: '2+2' },
+      { id: 'a2', name: 'Apartman 2', short: 'A2', cap: '4+2' }
+    ];
+    const UNIT_BY_ID = Object.fromEntries(UNITS.map((u, i) => [u.id, { ...u, index: i }]));
+
+    const STATUS = {
+      placeno: { label: 'Plaćeno', color: 'var(--st-placeno)' },
+      akontacija: { label: 'Akontacija', color: 'var(--st-akontacija)' },
+      nije_placeno: { label: 'Nije plaćeno', color: 'var(--st-nije)' }
+    };
+
+    const MONTHS = ['Siječanj', 'Veljača', 'Ožujak', 'Travanj', 'Svibanj', 'Lipanj',
+                    'Srpanj', 'Kolovoz', 'Rujan', 'Listopad', 'Studeni', 'Prosinac'];
+    const DAYS = ['NE', 'PO', 'UT', 'SR', 'ČE', 'PE', 'SU'];
+
+    // ---------------------------------------------------------------------
+    // Pomoćne funkcije (datumi su nizovi 'YYYY-MM-DD', računamo u UTC-u)
+    // ---------------------------------------------------------------------
+    const DAY = 86400000;
+    const $ = (sel) => document.querySelector(sel);
+    const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+    const fmt = (t) => new Date(t).toISOString().slice(0, 10);
+    const addDays = (s, n) => fmt(parse(s) + n * DAY);
+    const diffDays = (a, b) => Math.round((parse(b) - parse(a)) / DAY);
+    const todayStr = () => { const n = new Date(); return fmt(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate())); };
+    const fmtDate = (s) => { const [y, m, d] = s.split('-'); return `${+d}.${+m}.${y}.`; };
+    const fmtShort = (s) => { const [, m, d] = s.split('-'); return `${+d}.${+m}.`; };
+    const isDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s || '');
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const capMax = (cap) => cap.split('+').reduce((a, b) => a + Number(b), 0);
+    const guests = (r) => (r.children ? `${r.adults}+${r.children}` : `${r.adults}`);
+    const guestName = (r) => [r.lastName, r.firstName].filter(Boolean).join(' ');
+
+    function matches(r, term) {
+      const unit = UNIT_BY_ID[r.unitId];
+      return [r.firstName, r.lastName, r.phone, r.note, unit && unit.name]
+        .join(' ').toLowerCase().includes(term);
+    }
+
+    let toastTimer;
+    function toast(message, isError = false) {
+      const el = $('#toast');
+      el.textContent = message;
+      el.classList.toggle('is-error', isError);
+      el.classList.add('is-shown');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('is-shown'), isError ? 6000 : 2800);
+    }
+
+    // ---------------------------------------------------------------------
+    // Stanje
+    // ---------------------------------------------------------------------
+    const state = {
+      reservations: [],
+      tab: 'current',       // 'current' (trenutna sezona) | 'archive' | 'list'
+      archiveYear: null,    // koja je arhivska sezona odabrana
+      search: '',
+      editingId: null,
+      unsubscribe: null,
+      scrollToToday: true
+    };
+
+    // ---------------------------------------------------------------------
+    // Sezone: sezona "26/27" traje od 1.5. do 30.9.2027.
+    // Od 1. rujna nova sezona postaje trenutna, a prethodna ide u arhivu.
+    // ---------------------------------------------------------------------
+    const SEASON_START = '05-01';
+    const SEASON_END = '09-30';
+
+    function currentSeasonYear() {
+      const [y, m] = todayStr().split('-').map(Number);
+      return m >= 9 ? y + 1 : y;
+    }
+
+    const seasonLabel = (year) => `${String(year - 1).slice(-2)}/${String(year).slice(-2)}`;
+
+    function archiveYears() {
+      const current = currentSeasonYear();
+      const years = new Set([current - 1]);
+      for (const r of state.reservations) {
+        if (!isDate(r.arrival)) continue;
+        const y = Number(r.arrival.slice(0, 4));
+        if (y < current) years.add(y);
+      }
+      return [...years].sort((a, b) => b - a);
+    }
+
+    function seasonYear() {
+      return state.tab === 'archive' ? (state.archiveYear || currentSeasonYear() - 1) : currentSeasonYear();
+    }
+
+    function getRange() {
+      const year = seasonYear();
+      const start = `${year}-${SEASON_START}`;
+      const end = `${year}-${SEASON_END}`;
+      const days = diffDays(start, end) + 1;
+      return {
+        year, start, days,
+        endExclusive: addDays(start, days),
+        label: `Sezona ${seasonLabel(year)}`,
+        sub: `${fmtShort(start)} – ${fmtDate(end)}`
+      };
+    }
+
+    // ---------------------------------------------------------------------
+    // Smjene gostiju: ista jedinica, isti dan – jedan gost odlazi, drugi dolazi
+    // ---------------------------------------------------------------------
+    function findChangeovers() {
+      const arrivals = new Map();
+      for (const r of state.reservations) {
+        const key = r.unitId + '|' + r.arrival;
+        if (!arrivals.has(key)) arrivals.set(key, []);
+        arrivals.get(key).push(r);
+      }
+      const list = [];
+      for (const out of state.reservations) {
+        for (const incoming of arrivals.get(out.unitId + '|' + out.departure) || []) {
+          if (incoming.id !== out.id) list.push({ unitId: out.unitId, date: out.departure, out, incoming });
+        }
+      }
+      return list;
+    }
+
+    // ---------------------------------------------------------------------
+    // Prikaz: kartice
+    // ---------------------------------------------------------------------
+    function renderTabs() {
+      const current = currentSeasonYear();
+      const tabs = [
+        ['current', `Sezona ${seasonLabel(current)}`],
+        ['archive', `Arhiva ${seasonLabel(state.archiveYear || current - 1)}`],
+        ['list', 'Popis']
+      ];
+      $('#tabs').innerHTML = tabs.map(([id, label]) =>
+        `<button type="button" role="tab" data-tab="${id}" aria-selected="${state.tab === id}">${label}</button>`).join('');
+    }
+
+    // ---------------------------------------------------------------------
+    // Prikaz: danas
+    // ---------------------------------------------------------------------
+    function renderToday(changeovers) {
+      const today = todayStr();
+      const arriving = state.reservations.filter((r) => r.arrival === today);
+      const leaving = state.reservations.filter((r) => r.departure === today);
+      const staying = state.reservations.filter((r) => r.arrival <= today && r.departure > today);
+      const swaps = changeovers.filter((c) => c.date === today);
+
+      const chips = (list) => list.length
+        ? `<div class="chips">${list.map((r) => `<button type="button" class="chip" data-id="${esc(r.id)}"><i style="background:${STATUS[r.status]?.color}"></i>${esc(r.lastName)} · ${esc(UNIT_BY_ID[r.unitId]?.short || '?')}</button>`).join('')}</div>`
+        : '<div class="muted">Nitko</div>';
+
+      const swapChips = swaps.length
+        ? `<div class="chips">${swaps.map((c) => `<button type="button" class="chip" data-id="${esc(c.incoming.id)}"><b class="swap-dot">⇄</b>${esc(UNIT_BY_ID[c.unitId]?.short || '?')}: ${esc(c.out.lastName)} → ${esc(c.incoming.lastName)}</button>`).join('')}</div>`
+        : '<div class="muted">Nema smjena</div>';
+
+      $('#today').innerHTML = `
+        <div class="today-card"><h3>Danas dolaze</h3><span class="count">${arriving.length}</span>${chips(arriving)}</div>
+        <div class="today-card"><h3>Danas odlaze</h3><span class="count">${leaving.length}</span>${chips(leaving)}</div>
+        <div class="today-card"><h3>Danas smjena</h3><span class="count">${swaps.length}</span>${swapChips}</div>
+        <div class="today-card"><h3>Trenutno borave</h3><span class="count">${staying.length}</span><span class="muted">od ${UNITS.length} jedinica zauzeto</span></div>`;
+    }
+
+    // ---------------------------------------------------------------------
+    // Prikaz: statistika za prikazanu sezonu
+    // ---------------------------------------------------------------------
+    function renderStats(changeovers) {
+      const { start, days, endExclusive } = getRange();
+      const swaps = changeovers.filter((c) => c.date >= start && c.date < endExclusive).length;
+      let nights = 0, arrivals = 0, unpaid = 0, deposit = 0;
+
+      for (const r of state.reservations) {
+        const from = r.arrival > start ? r.arrival : start;
+        const to = r.departure < endExclusive ? r.departure : endExclusive;
+        const n = diffDays(from, to);
+        if (n > 0) {
+          nights += n;
+          if (r.status === 'nije_placeno') unpaid++;
+          if (r.status === 'akontacija') deposit++;
+        }
+        if (r.arrival >= start && r.arrival < endExclusive) arrivals++;
+      }
+
+      const capacity = UNITS.length * days;
+      const occupancy = capacity ? Math.round((nights / capacity) * 100) : 0;
+
+      $('#stats').innerHTML = `
+        <div class="stat"><b>${occupancy}%</b><span>Popunjenost</span><div class="meter"><i style="width:${occupancy}%"></i></div></div>
+        <div class="stat"><b>${nights}</b><span>Zauzetih noćenja od ${capacity}</span></div>
+        <div class="stat"><b>${arrivals}</b><span>Dolazaka</span></div>
+        <div class="stat"><b>${swaps}</b><span>Smjena gostiju</span></div>
+        <div class="stat"><b>${deposit}</b><span>S akontacijom</span></div>
+        <div class="stat"><b>${unpaid}</b><span>Nije plaćeno</span></div>`;
+    }
+
+    // ---------------------------------------------------------------------
+    // Prikaz: kalendar
+    // ---------------------------------------------------------------------
+    // Kalendar je visok točno koliko je vidljivo u okviru (bez trake za vodoravno pomicanje),
+    // pa se redovi rastegnu i sve jedinice uvijek stanu bez okomitog pomicanja
+    function fitCalendarHeight() {
+      $('#cal').style.minHeight = $('#cal-wrap').clientHeight + 'px';
+    }
+    if ('ResizeObserver' in window) new ResizeObserver(fitCalendarHeight).observe($('#cal-wrap'));
+
+    function renderCalendar(changeovers) {
+      const { start, days, endExclusive, label, sub, year } = getRange();
+      const today = todayStr();
+      const cal = $('#cal');
+      const html = [];
+      const isArchive = state.tab === 'archive';
+
+      // Naslov, oznaka arhive i odabir arhivske sezone
+      $('#range-label').innerHTML = `${esc(label)}<small>${esc(sub)}</small>`;
+      $('#archive-badge').hidden = !isArchive;
+      const years = archiveYears();
+      const select = $('#archive-select');
+      select.hidden = !isArchive || years.length < 2;
+      select.innerHTML = years.map((y) => `<option value="${y}"${y === year ? ' selected' : ''}>Sezona ${seasonLabel(y)}</option>`).join('');
+
+      // Brzi skok na mjesec (+ "Danas" ako je današnji dan u sezoni)
+      const jumps = [];
+      for (let i = 0; i < days;) {
+        const ds = addDays(start, i);
+        const [yy, mm] = ds.split('-').map(Number);
+        jumps.push(`<button type="button" data-offset="${i}">${MONTHS[mm - 1]}</button>`);
+        i += diffDays(ds, fmt(Date.UTC(yy, mm, 1)));
+      }
+      if (today >= start && today < endExclusive) {
+        jumps.push(`<button type="button" class="is-today-btn" data-offset="${diffDays(start, today) - 3}">Danas</button>`);
+      }
+      $('#month-jump').innerHTML = jumps.join('');
+
+      // Smjene u ovoj sezoni
+      const swapByCell = new Map();
+      for (const c of changeovers) {
+        if (c.date >= start && c.date < endExclusive) swapByCell.set(c.unitId + '|' + c.date, c);
+      }
+
+      cal.style.setProperty('--days', days);
+      cal.style.setProperty('--units', UNITS.length);
+      cal.classList.toggle('cal--compact', days > 70);
+
+      html.push('<div class="cal_corner">Jedinica</div>');
+
+      // Mjeseci
+      for (let i = 0; i < days;) {
+        const ds = addDays(start, i);
+        const [yy, mm] = ds.split('-').map(Number);
+        const len = Math.min(days - i, diffDays(ds, fmt(Date.UTC(yy, mm, 1))));
+        html.push(`<div class="cal_month" style="grid-column:${i + 2}/span ${len}"><span>${MONTHS[mm - 1]} ${yy}.</span></div>`);
+        i += len;
+      }
+
+      // Dani
+      const dayClasses = [];
+      for (let i = 0; i < days; i++) {
+        const ds = addDays(start, i);
+        const d = new Date(parse(ds));
+        const cls = [];
+        if (d.getUTCDay() === 0 || d.getUTCDay() === 6) cls.push('is-weekend');
+        if (ds === today) cls.push('is-today');
+        if (d.getUTCDate() === 1 && i > 0) cls.push('is-month-start');
+        dayClasses.push(cls.join(' '));
+        html.push(`<div class="cal_day ${cls.join(' ')}" style="grid-column:${i + 2}"><b>${d.getUTCDate()}</b><small>${DAYS[d.getUTCDay()]}</small></div>`);
+      }
+
+      // Jedinice i polja
+      UNITS.forEach((u, r) => {
+        const row = r + 3;
+        html.push(`<div class="cal_unit" style="grid-row:${row}" title="${esc(u.name)}"><strong class="full">${esc(u.name)}</strong><strong class="short">${u.short}</strong><small>${u.cap}</small></div>`);
+        for (let i = 0; i < days; i++) {
+          const ds = addDays(start, i);
+          const swap = swapByCell.get(u.id + '|' + ds);
+          const swapCls = swap ? ' is-swap' : '';
+          const swapTip = swap ? ` title="${esc(`Smjena gostiju: ${guestName(swap.out)} odlazi, ${guestName(swap.incoming)} dolazi`)}"` : '';
+          html.push(`<div class="cal_cell ${dayClasses[i]}${swapCls}" style="grid-row:${row};grid-column:${i + 2}" data-unit="${u.id}" data-date="${ds}"${swapTip}></div>`);
+        }
+      });
+
+      // Rezervacije: traka od sredine dana dolaska do sredine dana odlaska
+      const term = state.search;
+      for (const res of state.reservations) {
+        const unit = UNIT_BY_ID[res.unitId];
+        if (!unit || !isDate(res.arrival) || !isDate(res.departure)) continue;
+        const a = diffDays(start, res.arrival);
+        const b = diffDays(start, res.departure);
+        if (b <= a || b < 0 || a > days - 1) continue;
+
+        const colStart = Math.max(a, 0) + 2;
+        const colEnd = Math.min(b, days - 1) + 3;
+        const cls = ['cal_bar', 'st-' + res.status];
+        if (a < 0) cls.push('cut-start');
+        if (b > days - 1) cls.push('cut-end');
+        if (a >= 0 && swapByCell.has(res.unitId + '|' + res.arrival)) cls.push('after-swap');
+        if (term && !matches(res, term)) cls.push('is-dim');
+
+        const tip = `${guestName(res)} · ${unit.name}\n${fmtDate(res.arrival)} – ${fmtDate(res.departure)} (${b - a} noći)\n${guests(res)} osobe · ${STATUS[res.status]?.label || ''}${res.note ? '\n' + res.note : ''}`;
+        html.push(`<button type="button" class="${cls.join(' ')}" style="grid-row:${unit.index + 3};grid-column:${colStart}/${colEnd}" data-id="${esc(res.id)}" title="${esc(tip)}"><span>${esc(res.lastName || res.firstName)}</span><small>${guests(res)}</small></button>`);
+      }
+
+      // Oznaka ⇄ na mjestu gdje se susreću dvije rezervacije
+      for (const c of swapByCell.values()) {
+        const unit = UNIT_BY_ID[c.unitId];
+        if (!unit) continue;
+        html.push(`<div class="cal_swap" style="grid-row:${unit.index + 3};grid-column:${diffDays(start, c.date) + 2}" aria-hidden="true">⇄</div>`);
+      }
+
+      cal.innerHTML = html.join('');
+      fitCalendarHeight();
+
+      // Pri promjeni raspona skrolaj do današnjeg dana
+      if (state.scrollToToday) {
+        const idx = diffDays(start, today);
+        const wrap = $('#cal-wrap');
+        if (idx >= 0 && idx < days) {
+          const dayWidth = parseFloat(getComputedStyle(cal).getPropertyValue('--dayw')) || 40;
+          wrap.scrollLeft = Math.max(0, (idx - 3) * dayWidth);
+        } else {
+          wrap.scrollLeft = 0;
+        }
+        state.scrollToToday = false;
+      }
+    }
+
+    // ---------------------------------------------------------------------
+    // Prikaz: popis
+    // ---------------------------------------------------------------------
+    function renderList(changeovers) {
+      const swapArrivals = new Set(changeovers.map((c) => c.unitId + '|' + c.date));
+      const status = $('#f-status').value;
+      const unitId = $('#f-unit').value;
+      const upcoming = $('#f-upcoming').checked;
+      const today = todayStr();
+      const term = state.search;
+
+      const rows = state.reservations.filter((r) =>
+        (!status || r.status === status) &&
+        (!unitId || r.unitId === unitId) &&
+        (!upcoming || r.departure >= today) &&
+        (!term || matches(r, term)));
+
+      $('#list-count').textContent = `${rows.length} ${rows.length === 1 ? 'rezervacija' : 'rezervacija'}`;
+      $('#list-body').innerHTML = rows.length ? rows.map((r) => `
+        <tr data-id="${esc(r.id)}">
+          <td class="nowrap">${fmtDate(r.arrival)}${swapArrivals.has(r.unitId + '|' + r.arrival) ? '<b class="swap-dot" title="Smjena gostiju – isti dan prethodni gost odlazi">⇄</b>' : ''}</td>
+          <td class="nowrap">${fmtDate(r.departure)}</td>
+          <td class="num">${diffDays(r.arrival, r.departure)}</td>
+          <td class="nowrap">${esc(UNIT_BY_ID[r.unitId]?.name || r.unitId)}</td>
+          <td><strong>${esc(r.lastName)}</strong> ${esc(r.firstName)}</td>
+          <td class="nowrap">${r.phone ? `<a href="tel:${esc(r.phone.replace(/\s+/g, ''))}">${esc(r.phone)}</a>` : ''}</td>
+          <td class="num">${guests(r)}</td>
+          <td><span class="pill st-${esc(r.status)}">${esc(STATUS[r.status]?.label || r.status)}</span></td>
+          <td>${esc(r.note)}</td>
+        </tr>`).join('')
+        : '<tr><td class="empty" colspan="9">Nema rezervacija za odabrane filtere.</td></tr>';
+    }
+
+    function render() {
+      const changeovers = findChangeovers();
+      renderTabs();
+      renderToday(changeovers);
+      $('#tab-calendar').hidden = state.tab === 'list';
+      $('#tab-list').hidden = state.tab !== 'list';
+      if (state.tab === 'list') renderList(changeovers);
+      else { renderStats(changeovers); renderCalendar(changeovers); }
+    }
+
+    // ---------------------------------------------------------------------
+    // Dijalog za unos / uređivanje
+    // ---------------------------------------------------------------------
+    const dialog = $('#res-dialog');
+    const form = $('#res-form');
+    const F = form.elements;
+
+    function readForm() {
+      const int = (v) => Math.max(0, Math.min(20, parseInt(v, 10) || 0));
+      return {
+        unitId: F.unitId.value,
+        firstName: F.firstName.value.trim(),
+        lastName: F.lastName.value.trim(),
+        phone: F.phone.value.trim(),
+        adults: int(F.adults.value),
+        children: int(F.children.value),
+        arrival: F.arrival.value,
+        departure: F.departure.value,
+        status: F.status.value,
+        note: F.note.value.trim()
+      };
+    }
+
+    function conflictsFor(d) {
+      return state.reservations.filter((o) =>
+        o.id !== state.editingId && o.unitId === d.unitId &&
+        o.arrival < d.departure && d.arrival < o.departure);
+    }
+
+    function updateDialogInfo() {
+      const d = readForm();
+      const unit = UNIT_BY_ID[d.unitId];
+      const warnings = [];
+      let info = '';
+
+      if (isDate(d.arrival) && isDate(d.departure)) {
+        const nights = diffDays(d.arrival, d.departure);
+        if (nights <= 0) warnings.push('Odlazak mora biti nakon dolaska.');
+        else info = `${nights} ${nights === 1 ? 'noćenje' : nights < 5 ? 'noćenja' : 'noćenja'} · kapacitet jedinice ${unit ? unit.cap : '–'}`;
+
+        if (nights > 0) {
+          for (const c of conflictsFor(d)) {
+            warnings.push(`Preklapa se s rezervacijom: ${guestName(c)} (${fmtShort(c.arrival)} – ${fmtDate(c.departure)}).`);
+          }
+        }
+      }
+      if (unit && d.adults + d.children > capMax(unit.cap)) {
+        warnings.push(`Broj osoba (${d.adults + d.children}) veći je od kapaciteta jedinice (${unit.cap}).`);
+      }
+
+      $('#dlg-info').textContent = info;
+      $('#dlg-warn').innerHTML = warnings.map(esc).join('<br>');
+    }
+
+    function openDialog(id, preset = {}) {
+      const existing = id ? state.reservations.find((r) => r.id === id) : null;
+      if (id && !existing) return;
+      state.editingId = existing ? id : null;
+
+      const arrival = preset.arrival || todayStr();
+      const d = existing || {
+        unitId: preset.unitId || UNITS[0].id, firstName: '', lastName: '', phone: '',
+        adults: 2, children: 0, arrival, departure: preset.departure || addDays(arrival, 1),
+        status: 'nije_placeno', note: ''
+      };
+
+      for (const key of ['unitId', 'firstName', 'lastName', 'phone', 'adults', 'children', 'arrival', 'departure', 'status', 'note']) {
+        F[key].value = d[key] ?? '';
+      }
+      $('#dlg-title').textContent = existing ? guestName(existing) || 'Rezervacija' : 'Nova rezervacija';
+      $('#delete-btn').hidden = !existing;
+      updateDialogInfo();
+      dialog.showModal();
+      if (!existing) F.lastName.focus();
+    }
+
+    form.addEventListener('input', (e) => {
+      // Ako dolazak "preskoči" odlazak, pomakni odlazak na dan nakon
+      if (e.target === F.arrival && isDate(F.arrival.value) &&
+          (!isDate(F.departure.value) || F.departure.value <= F.arrival.value)) {
+        F.departure.value = addDays(F.arrival.value, 1);
+      }
+      updateDialogInfo();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const d = readForm();
+
+      if (!d.lastName) { F.lastName.focus(); $('#dlg-warn').textContent = 'Upišite prezime gosta.'; return; }
+      if (!isDate(d.arrival) || !isDate(d.departure)) { $('#dlg-warn').textContent = 'Upišite datum dolaska i odlaska.'; return; }
+      if (d.departure <= d.arrival) { $('#dlg-warn').textContent = 'Odlazak mora biti nakon dolaska.'; return; }
+
+      const conflicts = conflictsFor(d);
+      if (conflicts.length && !confirm(`Rezervacija se preklapa s: ${conflicts.map(guestName).join(', ')}.\n\nSvejedno spremiti?`)) return;
+
+      const btn = $('#save-btn');
+      btn.disabled = true;
+      try {
+        if (state.editingId) {
+          await updateDoc(doc(db, 'reservations', state.editingId), { ...d, updatedAt: serverTimestamp() });
+        } else {
+          await addDoc(collection(db, 'reservations'), { ...d, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+        }
+        dialog.close();
+        toast('Rezervacija je spremljena.');
+      } catch (err) {
+        console.error(err);
+        $('#dlg-warn').textContent = 'Spremanje nije uspjelo: ' + (err.code || err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    $('#delete-btn').addEventListener('click', async () => {
+      const r = state.reservations.find((x) => x.id === state.editingId);
+      if (!r || !confirm(`Obrisati rezervaciju ${guestName(r)} (${fmtShort(r.arrival)} – ${fmtDate(r.departure)})?\n\nOvo se ne može poništiti.`)) return;
+      try {
+        await deleteDoc(doc(db, 'reservations', r.id));
+        dialog.close();
+        toast('Rezervacija je obrisana.');
+      } catch (err) {
+        console.error(err);
+        $('#dlg-warn').textContent = 'Brisanje nije uspjelo: ' + (err.code || err.message);
+      }
+    });
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog || e.target.closest('[data-close]')) dialog.close();
+    });
+
+    // ---------------------------------------------------------------------
+    // Događaji sučelja
+    // ---------------------------------------------------------------------
+    for (const [value, s] of Object.entries(STATUS)) {
+      F.status.add(new Option(s.label, value));
+      $('#f-status').add(new Option(s.label, value));
+    }
+    for (const u of UNITS) {
+      F.unitId.add(new Option(`${u.name} · ${u.cap}`, u.id));
+      $('#f-unit').add(new Option(u.name, u.id));
+    }
+
+    $('#cal').addEventListener('click', (e) => {
+      const bar = e.target.closest('.cal_bar');
+      if (bar) return openDialog(bar.dataset.id);
+      const cell = e.target.closest('.cal_cell');
+      if (cell) openDialog(null, { unitId: cell.dataset.unit, arrival: cell.dataset.date });
+    });
+
+    $('#today').addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (chip) openDialog(chip.dataset.id);
+    });
+
+    $('#list-body').addEventListener('click', (e) => {
+      if (e.target.closest('a')) return;
+      const row = e.target.closest('tr[data-id]');
+      if (row) openDialog(row.dataset.id);
+    });
+
+    $('#new-btn').addEventListener('click', () => openDialog(null));
+
+    $('#tabs').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-tab]');
+      if (!b || b.dataset.tab === state.tab) return;
+      state.tab = b.dataset.tab;
+      state.scrollToToday = true;
+      render();
+    });
+
+    $('#archive-select').addEventListener('change', (e) => {
+      state.archiveYear = Number(e.target.value);
+      state.scrollToToday = true;
+      render();
+    });
+
+    // Brzi skok na mjesec / danas
+    $('#month-jump').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-offset]');
+      if (!b) return;
+      const dayWidth = parseFloat(getComputedStyle($('#cal')).getPropertyValue('--dayw')) || 34;
+      $('#cal-wrap').scrollTo({ left: Math.max(0, Number(b.dataset.offset)) * dayWidth, behavior: 'smooth' });
+    });
+
+    $('#search').addEventListener('input', (e) => { state.search = e.target.value.trim().toLowerCase(); render(); });
+    ['#f-status', '#f-unit', '#f-upcoming'].forEach((sel) => $(sel).addEventListener('change', () => renderList(findChangeovers())));
+
+    // ---------------------------------------------------------------------
+    // Prijava i pristup
+    // ---------------------------------------------------------------------
+    const loginForm = $('#login-form');
+    const loginMsg = $('#login-msg');
+
+    function showLoginMessage(text) {
+      loginMsg.textContent = text;
+    }
+
+    // Prikaži / sakrij lozinku
+    $('#pw-toggle').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      const input = loginForm.elements.password;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', String(show));
+      btn.setAttribute('aria-label', show ? 'Sakrij lozinku' : 'Prikaži lozinku');
+      input.focus();
+    });
+
+    const AUTH_ERRORS = {
+      'auth/invalid-credential': 'Pogrešan e-mail ili lozinka.',
+      'auth/wrong-password': 'Pogrešan e-mail ili lozinka.',
+      'auth/user-not-found': 'Pogrešan e-mail ili lozinka.',
+      'auth/invalid-email': 'E-mail adresa nije ispravna.',
+      'auth/user-disabled': 'Ovaj račun je onemogućen.',
+      'auth/too-many-requests': 'Previše pokušaja. Pričekajte nekoliko minuta pa pokušajte ponovno.',
+      'auth/network-request-failed': 'Nema internetske veze.'
+    };
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = loginForm.elements.email.value.trim();
+      const password = loginForm.elements.password.value;
+      if (!email || !password) return showLoginMessage('Upišite e-mail i lozinku.');
+
+      const btn = $('#login-btn');
+      btn.disabled = true;
+      showLoginMessage('');
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        loginForm.elements.password.value = '';
+      } catch (err) {
+        showLoginMessage(AUTH_ERRORS[err.code] || 'Prijava nije uspjela (' + err.code + ').');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    $('#logout-btn').addEventListener('click', () => signOut(auth));
+
+    function showView(name) {
+      $('#boot').hidden = true;
+      $('#login-view').hidden = name !== 'login';
+      $('#app-view').hidden = name !== 'app';
+    }
+
+    function subscribe() {
+      const q = query(collection(db, 'reservations'), orderBy('arrival'));
+      state.unsubscribe = onSnapshot(q, (snap) => {
+        state.reservations = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        render();
+      }, (err) => {
+        console.error(err);
+        toast('Učitavanje rezervacija nije uspjelo: ' + err.code, true);
+      });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (state.unsubscribe) { state.unsubscribe(); state.unsubscribe = null; }
+      state.reservations = [];
+
+      if (!user) { showView('login'); return; }
+
+      try {
+        const admin = await getDoc(doc(db, 'admins', user.uid));
+        if (!admin.exists()) {
+          await signOut(auth);
+          showLoginMessage('Ovaj račun nema administratorski pristup.');
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        await signOut(auth);
+        showLoginMessage('Provjera pristupa nije uspjela (' + (err.code || err.message) + ').');
+        return;
+      }
+
+      $('#user-email').textContent = user.email;
+      state.scrollToToday = true;
+      showView('app');
+      render();
+      subscribe();
+    });
+  </script>
+</body>
+</html>
